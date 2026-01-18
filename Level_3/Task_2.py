@@ -23,11 +23,11 @@ class DataVisualizer:
             self.df = pd.read_excel(self.uploaded_file, engine="openpyxl")
 
     def file_description(self):
-        st.header("📊 Dataset Statistics")
+        st.header("Dataset Statistics")
         st.write(self.df.describe())
 
     def visualize(self):
-        st.header("📈 Data Visualization")
+        st.header("Data Visualization")
 
         numeric_cols = self.df.select_dtypes(include=np.number).columns.tolist()
 
@@ -55,7 +55,7 @@ class DataVisualizer:
 
 
 def main():
-    st.title("📊 Interactive Data Visualizer Tool")
+    st.title("Interactive Data Visualizer Tool")
 
     uploaded_file = st.file_uploader(
         "Upload CSV or Excel file",

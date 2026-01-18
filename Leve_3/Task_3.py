@@ -10,5 +10,5 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn
-import streamlit
+import streamlit as st
 

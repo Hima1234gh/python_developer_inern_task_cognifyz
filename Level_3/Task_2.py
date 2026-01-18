@@ -11,48 +11,69 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-st.set_page_config(page_title="Automated Data Processor", layout="centered")
+class DataVisualizer:
+    def __init__(self, uploaded_file):
+        self.uploaded_file = uploaded_file
+        self.df = None
 
-st.title("📊 Automated File Processing System")
+    def read_file(self):
+        if self.uploaded_file.name.endswith(".csv"):
+            self.df = pd.read_csv(self.uploaded_file)
+        elif self.uploaded_file.name.endswith(".xlsx"):
+            self.df = pd.read_excel(self.uploaded_file, engine="openpyxl")
 
-# File upload
-uploaded_file = st.file_uploader(
-    "Upload your CSV or Excel file",
-    type=["csv", "xlsx"]
-)
+    def file_description(self):
+        st.header("📊 Dataset Statistics")
+        st.write(self.df.describe())
 
-if uploaded_file:
-    # Read file
-    if uploaded_file.name.endswith(".csv"):
-        df = pd.read_csv(uploaded_file)
+    def visualize(self):
+        st.header("📈 Data Visualization")
+
+        numeric_cols = self.df.select_dtypes(include=np.number).columns.tolist()
+
+        if not numeric_cols:
+            st.warning("No numeric columns available for visualization.")
+            return
+
+        column = st.selectbox("Select a column", numeric_cols)
+        plot_type = st.selectbox(
+            "Select plot type",
+            ["Histogram", "Box Plot", "Line Plot"]
+        )
+
+        fig, ax = plt.subplots()
+
+        if plot_type == "Histogram":
+            sns.histplot(self.df[column], kde=True, ax=ax)
+        elif plot_type == "Box Plot":
+            sns.boxplot(y=self.df[column], ax=ax)
+        elif plot_type == "Line Plot":
+            ax.plot(self.df[column])
+
+        ax.set_title(f"{plot_type} of {column}")
+        st.pyplot(fig)
+
+
+def main():
+    st.title("📊 Interactive Data Visualizer Tool")
+
+    uploaded_file = st.file_uploader(
+        "Upload CSV or Excel file",
+        type=["csv", "xlsx"]
+    )
+
+    if uploaded_file:
+        dv = DataVisualizer(uploaded_file)
+        dv.read_file()
+
+        st.success("File uploaded successfully!")
+        st.dataframe(dv.df.head())
+
+        dv.file_description()
+        dv.visualize()
     else:
-        df = pd.read_excel(uploaded_file)
+        st.info("Please upload a dataset to begin.")
 
-    st.success("File uploaded successfully!")
 
-    # Show raw data
-    st.subheader("🔍 Preview of Data")
-    st.dataframe(df.head())
-
-    # Basic cleaning using NumPy & pandas
-    st.subheader("🧹 Data Cleaning")
-    df = df.dropna()
-    df = df.select_dtypes(include=np.number)
-
-    st.write("After removing missing values:")
-    st.dataframe(df.head())
-
-    # Statistics
-    st.subheader("📈 Statistical Summary")
-    st.write(df.describe())
-
-    # Visualization
-    st.subheader("📊 Visualization")
-
-    column = st.selectbox("Select column for visualization", df.columns)
-
-    fig, ax = plt.subplots()
-    sns.histplot(df[column], kde=True, ax=ax)
-    ax.set_title(f"Distribution of {column}")
-
-    st.pyplot(fig)
+if __name__ == "__main__":
+    main()

@@ -6,9 +6,3 @@ showcase their problem-solving skills and
 familiarity with Python's automation
 capabilities."""
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn
-import streamlit as st
-

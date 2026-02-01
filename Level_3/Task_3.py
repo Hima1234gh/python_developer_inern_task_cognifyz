@@ -20,69 +20,103 @@ class FileOrganizer:
         self.dest_dir = dest_dir
         self.dry_run = dry_run
         self.ignore_extensions = ignore_extensions or []
-        # Setup logging
+
         logging.basicConfig(
             filename="organizer.log",
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(message)s"
         )
-    # Helper method to get a unique filename
+
     def _get_unique_filename(self, directory, filename):
         base, ext = os.path.splitext(filename)
         counter = 1
         new_filename = filename
 
-        while os.path.exists(os.path.join(directory, new_filename)):
-            new_filename = f"{base}_{counter}{ext}"
-            counter += 1
+        try:
+            while os.path.exists(os.path.join(directory, new_filename)):
+                new_filename = f"{base}_{counter}{ext}"
+                counter += 1
+        except OSError as e:
+            logging.error(f"Error checking filename uniqueness: {e}")
 
         return new_filename
-    # Organize files by type
+
     def organize_by_type(self):
-        for filename in os.listdir(self.source_dir):
+        try:
+            files = os.listdir(self.source_dir)
+        except FileNotFoundError:
+            logging.error("Source directory not found.")
+            print("Error: Source directory not found.")
+            return
+        except PermissionError:
+            logging.error("Permission denied while accessing source directory.")
+            print("Error: Permission denied.")
+            return
+
+        for filename in files:
             file_path = os.path.join(self.source_dir, filename)
 
             if not os.path.isfile(file_path):
                 continue
 
-            extension = os.path.splitext(filename)[1][1:].lower() or "no_extension"
+            try:
+                extension = os.path.splitext(filename)[1][1:].lower() or "no_extension"
 
-            if extension in self.ignore_extensions:
-                continue
+                if extension in self.ignore_extensions:
+                    continue
 
-            target_dir = os.path.join(self.dest_dir, extension)
-            os.makedirs(target_dir, exist_ok=True)
+                target_dir = os.path.join(self.dest_dir, extension)
+                os.makedirs(target_dir, exist_ok=True)
 
-            new_name = self._get_unique_filename(target_dir, filename)
-            destination = os.path.join(target_dir, new_name)
+                new_name = self._get_unique_filename(target_dir, filename)
+                destination = os.path.join(target_dir, new_name)
 
-            if self.dry_run:
-                print(f"[DRY RUN] {filename} → {target_dir}")
-            else:
-                shutil.move(file_path, destination)
-                logging.info(f"Moved {filename} → {destination}")
-    # Organize files by modification date
+                if self.dry_run:
+                    print(f"[DRY RUN] {filename} → {target_dir}")
+                else:
+                    shutil.move(file_path, destination)
+                    logging.info(f"Moved {filename} → {destination}")
+
+            except Exception as e:
+                logging.error(f"Failed to move file {filename}: {e}")
+
     def organize_by_date(self):
-        for filename in os.listdir(self.source_dir):
+        try:
+            files = os.listdir(self.source_dir)
+        except FileNotFoundError:
+            logging.error("Source directory not found.")
+            print("Error: Source directory not found.")
+            return
+        except PermissionError:
+            logging.error("Permission denied while accessing source directory.")
+            print("Error: Permission denied.")
+            return
+
+        for filename in files:
             file_path = os.path.join(self.source_dir, filename)
 
             if not os.path.isfile(file_path):
                 continue
 
-            mod_time = os.path.getmtime(file_path)
-            mod_date = datetime.fromtimestamp(mod_time).strftime("%Y-%m-%d")
+            try:
+                mod_time = os.path.getmtime(file_path)
+                mod_date = datetime.fromtimestamp(mod_time).strftime("%Y-%m-%d")
 
-            target_dir = os.path.join(self.dest_dir, mod_date)
-            os.makedirs(target_dir, exist_ok=True)
+                target_dir = os.path.join(self.dest_dir, mod_date)
+                os.makedirs(target_dir, exist_ok=True)
 
-            new_name = self._get_unique_filename(target_dir, filename)
-            destination = os.path.join(target_dir, new_name)
+                new_name = self._get_unique_filename(target_dir, filename)
+                destination = os.path.join(target_dir, new_name)
 
-            if self.dry_run:
-                print(f"[DRY RUN] {filename} → {target_dir}")
-            else:
-                shutil.move(file_path, destination)
-                logging.info(f"Moved {filename} → {destination}")
+                if self.dry_run:
+                    print(f"[DRY RUN] {filename} → {target_dir}")
+                else:
+                    shutil.move(file_path, destination)
+                    logging.info(f"Moved {filename} → {destination}")
+
+            except Exception as e:
+                logging.error(f"Failed to process file {filename}: {e}")
+
 
 # Command-Line Interface
 class OrganizerCLI:

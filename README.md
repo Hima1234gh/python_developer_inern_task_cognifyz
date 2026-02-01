@@ -9,7 +9,7 @@ core Python fundamentals, data processing, automation, and real-world problem so
 ---
 
 ## 📂 Repository Structure
-~~~
+```
 PYTHON_DEVELOPER_INTERNSHIP_TASKS
 │
 ├── Level_2
@@ -31,7 +31,7 @@ PYTHON_DEVELOPER_INTERNSHIP_TASKS
 ├── organizer.log
 ├── .gitignore
 └── README.md
-~~~
+```
 
 
 ---
@@ -58,7 +58,7 @@ PYTHON_DEVELOPER_INTERNSHIP_TASKS
 ## 🔵 Level 3 – Data Handling & Automation
 
 - **Task_1.py**  
-  Performs data processing operations using structured datasets.
+  Performs Web scrappning operations.
 
 - **Task_2.py**  
   Implements logic for data analysis and structured output generation.

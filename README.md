@@ -9,7 +9,7 @@ core Python fundamentals, data processing, automation, and real-world problem so
 ---
 
 ## 📂 Repository Structure
-```
+```bash
 PYTHON_DEVELOPER_INTERNSHIP_TASKS
 │
 ├── Level_2
@@ -80,4 +80,3 @@ PYTHON_DEVELOPER_INTERNSHIP_TASKS
 Install dependencies using:
 ```bash
 pip install -r requirements.txt
-

@@ -136,3 +136,10 @@ if __name__ == "__main__":
     cli = OrganizerCLI()
     cli.run()
 
+# Exectution trial
+
+# python3 Level_3/Task_3.py  ~/target  ~/destination  --mode date  
+# To sort the files by dates
+
+# python3 Level_3/Task_3.py  ~/target ~/destination  --mode type
+# To sort the files by types

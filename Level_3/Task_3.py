@@ -12,13 +12,16 @@ import shutil
 import logging
 import argparse
 from datetime import datetime
+from dataclasses import dataclass
 
 # Automated File Organizer
+@dataclass
 class FileOrganizer:
-    def __init__(self, source_dir, dest_dir, dry_run=False, ignore_extensions=None):
-        self.source_dir = source_dir
-        self.dest_dir = dest_dir
-        self.dry_run = dry_run
+    source_dir: str
+    dest_dir: str   
+    dry_run: bool = False
+    def __init__(self,ignore_extensions=None):
+        
         self.ignore_extensions = ignore_extensions or []
 
         logging.basicConfig(

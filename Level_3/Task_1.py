@@ -9,13 +9,13 @@ techniques and handling HTML/XML data.
 import requests                     # For sending HTTP requests
 from bs4 import BeautifulSoup as bs  # For parsing HTML content
 import re                           # For discovering available HTML tags
+from dataclasses import dataclass
 
 
+@dataclass
 class WebScraper:
-    def __init__(self, url: str):
-        # Store the target URL and HTML content
-        self.url = url
-        self.html = None
+    url : str
+    html: str = ""  # To store the fetched HTML content
 
     def get_url(self) -> bool:
         """

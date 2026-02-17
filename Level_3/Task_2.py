@@ -10,11 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+from dataclasses import dataclass
 
+@dataclass
 class DataVisualizer:
-    def __init__(self, uploaded_file):
-        self.uploaded_file = uploaded_file
-        self.df = None
+    uploaded_file: str
+    df : pd.DataFrame = None
 
     def read_file(self):
         if self.uploaded_file.name.endswith(".csv"):
